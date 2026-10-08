@@ -113,7 +113,7 @@
           >
         </a>
         <nav
-          class="flex gap-1 p-1 rounded-full bg-white border border-line shadow-sm shadow-brand/5"
+          class="hidden md:flex gap-1 p-1 rounded-full bg-white border border-line shadow-sm shadow-brand/5"
           aria-label="Halaman"
         >
           <template x-for="p in pages" :key="p.id">
@@ -270,19 +270,20 @@
             <h2
               class="font-display font-extrabold text-4xl md:text-6xl tracking-tight"
             >
-              Proyek terbaru
+              Project terbaru
             </h2>
-            <div class="mt-8 grid gap-5 md:grid-cols-3">
+            <div
+              class="mt-6 md:mt-8 -mx-5 px-5 pt-1 pb-3 md:mx-0 md:px-0 md:pt-0 md:pb-0 flex md:grid md:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scroll-pl-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
               <template x-for="p in projects" :key="p.title">
-                <a
-                  :href="p.url"
-                  :target="p.url === '#' ? '_self' : '_blank'"
-                  rel="noopener"
-                  class="group flex md:block gap-4 rounded-3xl bg-white border border-line overflow-hidden hover:-translate-y-1 hover:border-brand hover:shadow-xl hover:shadow-brand/10 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                <button
+                  type="button"
+                  @click="openProject(p)"
+                  class="group block text-left shrink-0 w-[84%] sm:w-[55%] md:w-auto snap-start rounded-3xl bg-white border border-line overflow-hidden hover:-translate-y-1 hover:border-brand hover:shadow-xl hover:shadow-brand/10 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 >
                   <!-- Gambar 16:9 -->
                   <div
-                    class="w-28 md:w-full shrink-0 self-start md:self-auto aspect-video overflow-hidden bg-line md:m-2 md:mb-0 md:w-[calc(100%-1rem)] md:rounded-2xl"
+                    class="m-2 mb-0 aspect-video overflow-hidden rounded-2xl bg-line"
                   >
                     <img
                       x-show="p.image"
@@ -292,15 +293,14 @@
                       @error="p.image = ''"
                       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <!-- Cadangan bila gambar belum ada atau gagal dimuat -->
                     <div
                       x-show="!p.image"
-                      class="w-full h-full p-2 md:p-4"
+                      class="w-full h-full p-4"
                       :style="`background:${p.color}`"
                       aria-hidden="true"
                     >
                       <div
-                        class="w-full h-full rounded-md bg-white/90 p-2 md:p-3 space-y-1.5"
+                        class="w-full h-full rounded-md bg-white/90 p-3 space-y-1.5"
                       >
                         <div
                           class="h-2 w-1/2 rounded"
@@ -312,25 +312,47 @@
                     </div>
                   </div>
 
-                  <div class="py-3 pr-4 md:p-5">
+                  <div class="p-4 md:p-5">
                     <h3
                       class="font-display font-bold text-lg group-hover:text-brand transition-colors"
                       x-text="p.title"
                     ></h3>
                     <p
-                      class="mt-1 text-sm text-ink/70 leading-relaxed"
+                      class="mt-1 text-sm text-ink/70 leading-relaxed line-clamp-2"
                       x-text="p.desc"
                     ></p>
                     <ul class="mt-3 flex flex-wrap gap-1.5">
-                      <template x-for="t in p.tech" :key="t">
+                      <template x-for="t in p.tech.slice(0, 3)" :key="t">
                         <li
                           class="px-2.5 py-1 rounded-full bg-mist text-xs font-medium text-ink/70"
                           x-text="t"
                         ></li>
                       </template>
+                      <li
+                        x-show="p.tech.length > 3"
+                        class="px-2.5 py-1 rounded-full bg-mist text-xs font-medium text-ink/70"
+                        x-text="`+${p.tech.length - 3}`"
+                      ></li>
                     </ul>
+                    <span
+                      class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand"
+                    >
+                      Lihat detail
+                      <svg
+                        class="w-4 h-4 transition-transform group-hover:translate-x-0.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
+                    </span>
                   </div>
-                </a>
+                </button>
               </template>
             </div>
           </div>
@@ -380,6 +402,158 @@
           </div>
         </section>
       </main>
+      <!-- Navigasi mobile (tab bar bawah) -->
+      <nav
+        class="md:hidden shrink-0 relative z-10 px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]"
+        aria-label="Halaman (mobile)"
+      >
+        <div
+          class="flex gap-1 p-1 rounded-full bg-white border border-line shadow-lg shadow-brand/10"
+        >
+          <template x-for="p in pages" :key="p.id">
+            <button
+              type="button"
+              @click="page = p.id"
+              :aria-current="page === p.id ? 'page' : null"
+              :class="page === p.id ? 'bg-brand text-white shadow-md shadow-brand/30' : 'text-ink/60'"
+              class="flex-1 flex flex-col items-center gap-0.5 py-2 rounded-full text-[11px] font-semibold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            >
+              <svg
+                class="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path :d="p.icon" />
+              </svg>
+              <span x-text="p.label"></span>
+            </button>
+          </template>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Detail proyek -->
+    <div
+      x-show="modalOpen"
+      x-cloak
+      x-transition.opacity.duration.200ms
+      @keydown.escape.window="closeProject()"
+      @click.self="closeProject()"
+      class="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-ink/60 backdrop-blur-sm md:p-8"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <template x-if="selected">
+        <div
+          class="relative w-full max-w-4xl max-h-[92dvh] overflow-y-auto rounded-t-3xl md:rounded-3xl bg-white shadow-2xl"
+        >
+          <button
+            x-ref="closeBtn"
+            type="button"
+            @click="closeProject()"
+            aria-label="Tutup detail proyek"
+            class="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/90 border border-line flex items-center justify-center hover:bg-mist focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+
+          <!-- Gambar besar -->
+          <div class="aspect-video overflow-hidden bg-line">
+            <img
+              x-show="selected.image"
+              :src="selected.image"
+              :alt="`Tampilan ${selected.title}`"
+              @error="selected.image = ''"
+              class="w-full h-full object-cover"
+            />
+            <div
+              x-show="!selected.image"
+              class="w-full h-full"
+              :style="`background:${selected.color}`"
+              aria-hidden="true"
+            ></div>
+          </div>
+
+          <div class="p-6 md:p-10">
+            <h3
+              id="modal-title"
+              class="font-display font-extrabold text-3xl md:text-4xl tracking-tight"
+              x-text="selected.title"
+            ></h3>
+
+            <ul class="mt-4 flex flex-wrap gap-1.5">
+              <template x-for="t in selected.tech" :key="t">
+                <li
+                  class="px-3 py-1 rounded-full bg-mist text-xs font-medium text-ink/70"
+                  x-text="t"
+                ></li>
+              </template>
+            </ul>
+
+            <p
+              class="mt-6 text-base md:text-lg text-ink/75 leading-relaxed max-w-2xl"
+              x-text="selected.detail"
+            ></p>
+
+            <h4 class="mt-8 font-display font-bold text-lg">Fitur utama</h4>
+            <ul class="mt-3 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+              <template x-for="f in selected.features" :key="f">
+                <li
+                  class="flex items-start gap-2.5 text-sm md:text-base text-ink/80"
+                >
+                  <svg
+                    class="w-5 h-5 mt-0.5 shrink-0 text-brand"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span x-text="f"></span>
+                </li>
+              </template>
+            </ul>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a
+                x-show="selected.url !== '#'"
+                :href="selected.url"
+                target="_blank"
+                rel="noopener"
+                class="bg-brand text-white px-7 py-3.5 rounded-full font-semibold shadow-lg shadow-brand/30 hover:bg-brandDark transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >Kunjungi situs</a
+              >
+              <button
+                type="button"
+                @click="closeProject()"
+                class="px-7 py-3.5 rounded-full font-semibold border border-line hover:border-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
 
     <script>
@@ -387,10 +561,25 @@
         return {
           page: "beranda",
           modelOk: true,
+          selected: null,
+          modalOpen: false,
+          modelOk: true,
           pages: [
-            { id: "beranda", label: "Beranda" },
-            { id: "porto", label: "Portofolio" },
-            { id: "kontak", label: "Kontak" },
+            {
+              id: "beranda",
+              label: "Beranda",
+              icon: "M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z",
+            },
+            {
+              id: "porto",
+              label: "Portofolio",
+              icon: "M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z",
+            },
+            {
+              id: "kontak",
+              label: "Kontak",
+              icon: "M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z",
+            },
           ],
           stack: [
             "Laravel",
@@ -408,6 +597,15 @@
               color: "#0061FE",
               image: "assets/projects/frame.png",
               desc: "Platform yang membantu individu terhubung dengan psikolog profesional secara aman, nyaman, dan terpercaya.",
+              detail:
+                "Frame Psikologi mempertemukan klien dengan psikolog profesional dalam satu platform. Klien bisa memilih psikolog, menjadwalkan sesi, dan membayar langsung dari website, sementara psikolog dan admin mengelola jadwal serta data sesi dari dasbor masing-masing.",
+              features: [
+                "Profil dan pencarian psikolog",
+                "Pemesanan jadwal konsultasi",
+                "Pembayaran online lewat payment gateway",
+                "Dasbor klien, psikolog, dan admin",
+                "Deployment dengan Docker",
+              ],
               tech: [
                 "Laravel",
                 "Tailwind",
@@ -423,6 +621,14 @@
               color: "#0B1527",
               image: "assets/projects/smart.png",
               desc: "Digital branch yang melayani layanan online untuk produk perbankan.",
+              detail:
+                "SmartByMSA adalah cabang digital yang memungkinkan nasabah mengakses layanan dan produk perbankan secara online, tanpa harus datang ke kantor cabang.",
+              features: [
+                "Pengajuan produk perbankan secara online",
+                "Formulir dan unggah dokumen",
+                "Dasbor admin untuk memproses pengajuan",
+                "Informasi produk yang mudah dikelola",
+              ],
               tech: ["Laravel", "Bootstrap", "MySQL"],
               url: "https://smartbymsa.com/",
             },
@@ -431,6 +637,14 @@
               color: "#4D9AFF",
               image: "assets/projects/rpc.png",
               desc: "Aplikasi pengambilan Race Pack pada sebuah event lari.",
+              detail:
+                "RPC System membantu panitia event lari mengelola pengambilan race pack. Peserta diverifikasi di lokasi, dan setiap pengambilan tercatat sehingga panitia bisa memantau prosesnya.",
+              features: [
+                "Verifikasi peserta di lokasi",
+                "Pencatatan pengambilan race pack",
+                "Rekap data untuk panitia",
+                "Antarmuka cepat untuk meja registrasi",
+              ],
               tech: ["Laravel", "Tailwind", "Alpine JS", "MySQL"],
               url: "#",
             },
@@ -441,7 +655,16 @@
             if (ids.includes(h)) this.page = h;
             this.$watch("page", (v) => history.replaceState(null, "", "#" + v));
           },
+          openProject(p) {
+            this.selected = p;
+            this.modalOpen = true;
+            this.$nextTick(() => this.$refs.closeBtn?.focus());
+          },
+          closeProject() {
+            this.modalOpen = false;
+          },
           go(step) {
+            if (this.modalOpen) return;
             const ids = this.pages.map((p) => p.id);
             const i = ids.indexOf(this.page) + step;
             if (i >= 0 && i < ids.length) this.page = ids[i];
