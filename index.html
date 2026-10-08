@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nuro Labs — Web Developer</title>
+    <meta
+      name="description"
+      content="Nuro Labs membangun website dan aplikasi web dengan Laravel, Tailwind, dan Alpine JS."
+    />
+    <link rel="icon" type="image/png" href="assets/logo/logo-mark.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            // Warna diambil dari logo Nuro Labs
+            colors: {
+              brand: "#0061FE",
+              brandDark: "#0049C2",
+              brandSoft: "#4D9AFF",
+              ink: "#0B1527",
+              mist: "#EEF3FF",
+              line: "#D9E3F7",
+            },
+            fontFamily: {
+              display: ['"Bricolage Grotesque"', "system-ui", "sans-serif"],
+              sans: ['"Instrument Sans"', "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Decoder Meshopt (wajib diset SEBELUM model-viewer dimuat bila .glb dikompres dengan Meshopt) -->
+    <script>
+      self.ModelViewerElement = self.ModelViewerElement || {};
+      self.ModelViewerElement.meshoptDecoderLocation =
+        "https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js";
+    </script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"
+    ></script>
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      /* Pita diagonal, mengulang bentuk huruf N pada logo */
+      .slash {
+        background: linear-gradient(
+          118deg,
+          transparent 0 34%,
+          rgba(0, 97, 254, 0.9) 34% 58%,
+          transparent 58%
+        );
+      }
+      .glow {
+        background: radial-gradient(
+          60% 60% at 70% 20%,
+          rgba(0, 97, 254, 0.14),
+          transparent 70%
+        );
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-[#F7F9FF] text-ink font-sans antialiased"
+    x-data="site()"
+    @keydown.arrow-right.window="go(1)"
+    @keydown.arrow-left.window="go(-1)"
+  >
+    <div class="h-dvh flex flex-col relative">
+      <div
+        class="glow pointer-events-none absolute inset-0"
+        aria-hidden="true"
+      ></div>
+
+      <!-- Header -->
+      <header
+        class="shrink-0 relative z-10 flex items-center justify-between px-5 md:px-10 py-5"
+      >
+        <a
+          href="#beranda"
+          @click.prevent="page = 'beranda'"
+          class="flex items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          aria-label="Nuro Labs"
+        >
+          <img src="assets/logo/logo-mark.png" alt="" class="h-9 w-auto" />
+          <span class="font-display font-extrabold text-xl tracking-tight"
+            >NURO <span class="font-medium text-ink/55">LABS</span></span
+          >
+        </a>
+        <nav
+          class="flex gap-1 p-1 rounded-full bg-white border border-line shadow-sm shadow-brand/5"
+          aria-label="Halaman"
+        >
+          <template x-for="p in pages" :key="p.id">
+            <button
+              type="button"
+              @click="page = p.id"
+              :aria-current="page === p.id ? 'page' : null"
+              :class="page === p.id ? 'bg-brand text-white shadow-md shadow-brand/30' : 'text-ink/70 hover:text-ink hover:bg-mist'"
+              class="px-3.5 md:px-5 py-2 rounded-full text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              x-text="p.label"
+            ></button>
+          </template>
+        </nav>
+      </header>
+
+      <!-- Halaman -->
+      <main class="flex-1 min-h-0 relative z-10">
+        <!-- Beranda -->
+        <section
+          x-show="page === 'beranda'"
+          x-cloak
+          x-transition:enter="transition duration-300 ease-out"
+          x-transition:enter-start="opacity-0 translate-y-3"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute inset-0 overflow-y-auto px-5 md:px-10"
+        >
+          <div
+            class="min-h-full max-w-6xl mx-auto grid md:grid-cols-[1.2fr_1fr] gap-10 items-center py-6"
+          >
+            <div>
+              <h1
+                class="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1] tracking-tight"
+              >
+                Website rapi di dalam, cepat di layar.
+              </h1>
+              <p
+                class="mt-6 text-lg md:text-xl text-ink/70 max-w-xl leading-relaxed"
+              >
+                Kami membangun website perusahaan, sistem internal, dan aplikasi
+                web. Dari desain sampai rilis, ditangani satu tim kecil.
+              </p>
+              <div class="mt-8 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  @click="page = 'porto'"
+                  class="bg-brand text-white px-7 py-3.5 rounded-full font-semibold shadow-lg shadow-brand/30 hover:bg-brandDark hover:-translate-y-0.5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  Lihat hasil kerja
+                </button>
+                <button
+                  type="button"
+                  @click="page = 'kontak'"
+                  class="px-7 py-3.5 rounded-full font-semibold bg-white border border-line hover:border-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  Ceritakan kebutuhan Anda
+                </button>
+              </div>
+              <ul class="mt-10 flex flex-wrap gap-2 text-sm">
+                <template x-for="t in stack" :key="t">
+                  <li
+                    class="px-3.5 py-1.5 rounded-full bg-white border border-line font-medium text-ink/80"
+                    x-text="t"
+                  ></li>
+                </template>
+              </ul>
+            </div>
+
+            <!-- Panel visual: pita diagonal + model 3D -->
+            <div
+              class="hidden md:block relative overflow-hidden"
+              style="height: min(68vh, 560px)"
+            >
+              <div class="absolute inset-0" aria-hidden="true"></div>
+
+              <div
+                x-show="modelOk"
+                x-data="{ loaded: false, progress: 0 }"
+                class="absolute inset-0"
+              >
+                <model-viewer
+                  src="/assets/3d/logo.glb"
+                  camera-orbit="2.9412rad 1.2316rad 2.6805m"
+                  alt="Model 3D Nuro Labs"
+                  camera-controls
+                  auto-rotate
+                  disable-zoom
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  environment-image="neutral"
+                  @progress="progress = Math.round($event.detail.totalProgress * 100)"
+                  @load="loaded = true"
+                  @error="modelOk = false"
+                  class="transition-opacity duration-500"
+                  :class="loaded ? 'opacity-100' : 'opacity-0'"
+                  style="width: 100%; height: 100%; --poster-color: transparent"
+                >
+                  <!-- Matikan progress bar bawaan model-viewer -->
+                  <div slot="progress-bar"></div>
+                </model-viewer>
+
+                <!-- Loading -->
+                <div
+                  x-show="!loaded"
+                  x-transition.opacity.duration.300ms
+                  class="absolute inset-0 flex flex-col items-center justify-center gap-4"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <img
+                    src="assets/logo/logo-mark.png"
+                    alt=""
+                    class="h-14 w-auto animate-pulse"
+                  />
+                  <div class="w-40 h-1.5 rounded-full bg-mist overflow-hidden">
+                    <div
+                      class="h-full bg-brand transition-[width] duration-200"
+                      :style="`width:${progress}%`"
+                    ></div>
+                  </div>
+                  <p class="text-sm text-ink/60">
+                    Memuat model 3D… <span x-text="progress"></span>%
+                  </p>
+                </div>
+              </div>
+
+              <!-- Cadangan bila model gagal dimuat -->
+              <div
+                x-show="!modelOk"
+                class="absolute inset-0 flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <img
+                  src="assets/logo/logo-mark.png"
+                  alt=""
+                  class="h-40 w-auto drop-shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Portofolio -->
+        <section
+          x-show="page === 'porto'"
+          x-cloak
+          x-transition:enter="transition duration-300 ease-out"
+          x-transition:enter-start="opacity-0 translate-y-3"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute inset-0 overflow-y-auto px-5 md:px-10"
+        >
+          <div
+            class="min-h-full max-w-6xl mx-auto flex flex-col justify-center py-6"
+          >
+            <h2
+              class="font-display font-extrabold text-4xl md:text-6xl tracking-tight"
+            >
+              Proyek terbaru
+            </h2>
+            <div class="mt-8 grid gap-5 md:grid-cols-3">
+              <template x-for="p in projects" :key="p.title">
+                <a
+                  :href="p.url"
+                  :target="p.url === '#' ? '_self' : '_blank'"
+                  rel="noopener"
+                  class="group flex md:block gap-4 rounded-3xl bg-white border border-line overflow-hidden hover:-translate-y-1 hover:border-brand hover:shadow-xl hover:shadow-brand/10 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  <!-- Gambar 16:9 -->
+                  <div
+                    class="w-28 md:w-full shrink-0 self-start md:self-auto aspect-video overflow-hidden bg-line md:m-2 md:mb-0 md:w-[calc(100%-1rem)] md:rounded-2xl"
+                  >
+                    <img
+                      x-show="p.image"
+                      :src="p.image"
+                      :alt="`Tampilan ${p.title}`"
+                      loading="lazy"
+                      @error="p.image = ''"
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <!-- Cadangan bila gambar belum ada atau gagal dimuat -->
+                    <div
+                      x-show="!p.image"
+                      class="w-full h-full p-2 md:p-4"
+                      :style="`background:${p.color}`"
+                      aria-hidden="true"
+                    >
+                      <div
+                        class="w-full h-full rounded-md bg-white/90 p-2 md:p-3 space-y-1.5"
+                      >
+                        <div
+                          class="h-2 w-1/2 rounded"
+                          :style="`background:${p.color}`"
+                        ></div>
+                        <div class="h-1.5 w-5/6 rounded bg-ink/10"></div>
+                        <div class="h-1.5 w-2/3 rounded bg-ink/10"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="py-3 pr-4 md:p-5">
+                    <h3
+                      class="font-display font-bold text-lg group-hover:text-brand transition-colors"
+                      x-text="p.title"
+                    ></h3>
+                    <p
+                      class="mt-1 text-sm text-ink/70 leading-relaxed"
+                      x-text="p.desc"
+                    ></p>
+                    <ul class="mt-3 flex flex-wrap gap-1.5">
+                      <template x-for="t in p.tech" :key="t">
+                        <li
+                          class="px-2.5 py-1 rounded-full bg-mist text-xs font-medium text-ink/70"
+                          x-text="t"
+                        ></li>
+                      </template>
+                    </ul>
+                  </div>
+                </a>
+              </template>
+            </div>
+          </div>
+        </section>
+
+        <!-- Kontak -->
+        <section
+          x-show="page === 'kontak'"
+          x-cloak
+          x-transition:enter="transition duration-300 ease-out"
+          x-transition:enter-start="opacity-0 translate-y-3"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute inset-0 overflow-y-auto px-5 md:px-10 pb-6"
+        >
+          <div class="min-h-full max-w-6xl mx-auto flex">
+            <div
+              class="relative flex-1 rounded-[2rem] bg-ink text-white overflow-hidden flex flex-col justify-center p-8 md:p-16"
+            >
+              <div
+                class="slash absolute inset-0 opacity-70"
+                aria-hidden="true"
+              ></div>
+              <div class="relative">
+                <h2
+                  class="font-display font-extrabold text-4xl sm:text-5xl md:text-7xl tracking-tight max-w-3xl leading-[1.02]"
+                >
+                  Punya proyek? Kirim pesan, kami balas dalam 1 hari kerja.
+                </h2>
+                <div class="mt-8 flex flex-wrap gap-3">
+                  <a
+                    href="https://wa.me/6288238369438"
+                    target="_blank"
+                    rel="noopener"
+                    class="bg-white text-ink px-7 py-3.5 rounded-full font-semibold hover:bg-mist hover:-translate-y-0.5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >Chat WhatsApp</a
+                  >
+                  <a
+                    href="https://github.com/mnuzrili"
+                    target="_blank"
+                    rel="noopener"
+                    class="px-7 py-3.5 rounded-full font-semibold border border-white/40 hover:border-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >GitHub</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      function site() {
+        return {
+          page: "beranda",
+          modelOk: true,
+          pages: [
+            { id: "beranda", label: "Beranda" },
+            { id: "porto", label: "Portofolio" },
+            { id: "kontak", label: "Kontak" },
+          ],
+          stack: ["Laravel", "Tailwind CSS", "Alpine JS", "MySQL", "Docker"],
+          // Edit daftar proyek di sini
+          projects: [
+            {
+              title: "Frame Psikologi",
+              color: "#0061FE",
+              image: "assets/projects/frame.png",
+              desc: "Platform yang membantu individu terhubung dengan psikolog profesional secara aman, nyaman, dan terpercaya.",
+              tech: [
+                "Laravel",
+                "Tailwind",
+                "Alpine JS",
+                "Docker",
+                "MySQL",
+                "Payment Gateway",
+              ],
+              url: "https://framepsikologi.id/",
+            },
+            {
+              title: "SmartByMSA",
+              color: "#0B1527",
+              image: "assets/projects/smart.png",
+              desc: "Digital branch yang melayani layanan online untuk produk perbankan.",
+              tech: ["Laravel", "Bootstrap", "MySQL"],
+              url: "https://smartbymsa.com/",
+            },
+            {
+              title: "RPC System",
+              color: "#4D9AFF",
+              image: "assets/projects/rpc.png",
+              desc: "Aplikasi pengambilan Race Pack pada sebuah event lari.",
+              tech: ["Laravel", "Tailwind", "Alpine JS", "MySQL"],
+              url: "#",
+            },
+          ],
+          init() {
+            const ids = this.pages.map((p) => p.id);
+            const h = location.hash.slice(1);
+            if (ids.includes(h)) this.page = h;
+            this.$watch("page", (v) => history.replaceState(null, "", "#" + v));
+          },
+          go(step) {
+            const ids = this.pages.map((p) => p.id);
+            const i = ids.indexOf(this.page) + step;
+            if (i >= 0 && i < ids.length) this.page = ids[i];
+          },
+        };
+      }
+    </script>
+  </body>
+</html>
